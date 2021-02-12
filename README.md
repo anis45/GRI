@@ -1,2 +1,3 @@
-# GRI_TP2
+# GRI
+
 BFS sur un graph 
