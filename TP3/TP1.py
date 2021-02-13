@@ -30,23 +30,24 @@ class Graph:
         self.m = len(edg)
         # the maximum vertex number is n - 1, hence:
         self.n = edg.max() + 1
+        
         # compute degrees:
-        deg = np.zeros(self.n, dtype='int32')
+        self.deg = np.zeros(self.n, dtype='int32')
         for i in range(len(edg)) :
-            deg[edg[i, 0]] += 1
-            if symmetrize : deg[edg[i, 1]] += 1
+            self.deg[edg[i, 0]] += 1
+            if symmetrize : self.deg[edg[i, 1]] += 1
         # offset[u] will be the position of the first neighbor of u in adj
         self.offset = np.zeros(self.n + 1, dtype='int32')
         for u in range(self.n) :
-            self.offset[u+1] = self.offset[u] + deg[u]
-            deg[u] = 0 # re-use it as index of N(u)
+            self.offset[u+1] = self.offset[u] + self.deg[u]
+            self.deg[u] = 0 # re-use it as index of N(u)
         # all adjacency lists concatenated:
         self.adj = np.zeros(self.offset[self.n], dtype='int32')
         for i in range(len(edg)) :
             u = edg[i,0] ; v = edg[i,1]
-            self.adj[self.offset[u] + deg[u]] = v ; deg[u] += 1
+            self.adj[self.offset[u] + self.deg[u]] = v ; self.deg[u] += 1
             if symmetrize :
-                self.adj[self.offset[v] + deg[v]] = u ; deg[v] += 1
+                self.adj[self.offset[v] + self.deg[v]] = u ; self.deg[v] += 1
 
     def neighbors(self, u) :
         return self.adj[self.offset[u]:self.offset[u+1]]
